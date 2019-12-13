@@ -19,7 +19,7 @@ https://docs.cilium.io/en/v1.6/bpf/)。
 
 ---
 
-> 本文的目标读者是 **希望在技术层面对 BPF 和 XDP 有更深入理解的开发者和用户**。虽
+> 本文的目标读者是 **“希望在技术层面对 BPF 和 XDP 有更深入理解的开发者和用户”**。虽
 > 然阅读本文有助于拓宽读者对 Cilium 的认识，但这并不是使用 Cilium 的前提条件。
 
 BPF 是 **Linux 内核中**一个高度灵活与高效的**类虚拟机**（virtual machine-like）
@@ -295,7 +295,7 @@ op:8, dst_reg:4, src_reg:4, off:16, imm:32
   functions, and a hidden tail call instruction, which will jump into a different
   BPF program.
 
-**Linux 内核中内置了一个 BPF 解释器**，这个解释器可以执行 BPF 指令组成的程序。即
+**Linux 内核中内置了一个 BPF 解释器**，该解释器能够执行由 BPF 指令组成的程序。即
 使是 cBPF 程序，也可以在内核中透明地转换成 eBPF 程序，除非该架构仍然内置了 cBPF
 JIT，还没有迁移到 eBPF JIT。
 
@@ -311,14 +311,14 @@ JIT，还没有迁移到 eBPF JIT。
 ## 1.2 辅助函数
 
 辅助函数（Helper functions）使得 BPF 能够通过一组内核定义的函数调用（function
-call）来从内核中查询数据，或者将数据推送到内核。每种类型的 BPF 程序可以使用的辅
-助函数可能不同，例如，与 attach 到 tc 层的 BPF 程序相比，attach 到 socket 的 BPF
-程序只允许调用前者可以调用的辅助函数的一个子集。另外一个例子是，轻量级隧道（
-lightweight tunneling ）使用的封装和解封装（Encapsulation and decapsulation）辅
-助函数，只能被更低的 tc 层（lower tc layers）使用；而推送通知到用户态所使用的事
-件输出辅助函数，既可以被 tc 程序使用也可以被 XDP 程序使用。
+call）来从内核中查询数据，或者将数据推送到内核。**不同类型的 BPF 程序能够使用的
+辅助函数可能是不同的**，例如，与 attach 到 tc 层的 BPF 程序相比，attach 到
+socket 的 BPF程序只能够调用前者可以调用的辅助函数的一个子集。另外一个例子是，**
+轻量级隧道**（lightweight tunneling ）使用的封装和解封装（Encapsulation and
+decapsulation）辅助函数，只能被更低的 tc 层（lower tc layers）使用；而推送通知到
+用户态所使用的事件输出辅助函数，既可以被 tc 程序使用也可以被 XDP 程序使用。
 
-所有辅助函数的实现都共享一个通用的、和系统调用类似的函数签名。签名定义如下：
+**所有的辅助函数都共享同一个通用的、和系统调用类似的函数签名**。签名定义如下：
 
 ```c
 u64 fn(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
@@ -366,10 +366,10 @@ BPF 排列参数的方式（assignments）已经和底层架构的调用约定�
 buffer）的 `pointer/size` 参数对，辅助函数可以从这个位置读取数据或向其写入数据。
 对于这种情况，校验器还可以执行额外的检查，例如，缓冲区是否已经初始化过了。
 
-可用的 BPF 辅助函数很多，并且还在不断增加，例如，写作本文时，tc BPF 程序可以使用
-38 种不同的 BPF 辅助函数。对于一个给定的 BPF 程序类型，内核的 `struct
-bpf_verifier_ops` 包含了 `get_func_proto` 回调函数，这个函数提供了从某个特定的
-`enum bpf_func_id` 到一个可用的辅助函数的映射。
+**当前可用的 BPF 辅助函数已经有几十个，并且数量还在不断增加**，例如，写作本文时，tc
+BPF 程序可以使用38 种不同的 BPF 辅助函数。对于一个给定的 BPF 程序类型，内核的
+`struct bpf_verifier_ops` 包含了 `get_func_proto` 回调函数，这个函数提供了从某个
+特定的`enum bpf_func_id` 到一个可用的辅助函数的映射。
 
 <a name="bpf_maps"></a>
 
